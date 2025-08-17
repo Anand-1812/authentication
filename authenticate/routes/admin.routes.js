@@ -1,14 +1,13 @@
 import express from "express";
 import db from "../db/index.js";
 import { usersTable } from "../db/schema.js";
+import { ensureAuth, restrcitToRole } from "../middlewares/auth.middleware.js";
 
 const router = express();
 
-router.get('/users', async (req, res) => {
+const adminRestrictMiddleWare = restrcitToRole('ADMIN');
 
-  if (!req.header) {
-    return res.status(401).json({ error: `You must be authenticated to access this.` })
-  }
+router.get('/users', ensureAuth, adminRestrictMiddleWare, async (req, res) => {
 
   const users = await db.select({
     id: usersTable.id,

@@ -4,15 +4,11 @@ import { usersSessions, usersTable } from "../db/schema.js";
 import { createHmac, randomBytes } from "crypto";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import { ensureAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.patch('/', async (req, res) => {
-  const user = req.user;
-
-  if (!user) {
-    return res.status(401).json({ error: `You are not logged in.` });
-  }
+router.patch('/', ensureAuth,  async (req, res) => {
   const { name } = req.body;
   await db.update(usersTable).set({ name }).where(eq(usersTable.id, user.userId));
 
@@ -20,13 +16,7 @@ router.patch('/', async (req, res) => {
 
 })
 
-router.get('/', async (req, res) => {
-  const user = req.user;
-
-  if (!user) {
-    return res.status(401).json({ error: `You are not logged in.` });
-  }
-
+router.get('/', ensureAuth,  async (req, res) => {
   return res.json({ user })
 });
 
@@ -67,6 +57,7 @@ router.post('/login', async (req, res) => {
     .select({
       id: usersTable.id,
       email: usersTable.email,
+      role: usersTable.role,
       salt: usersTable.salt,
       password: usersTable.password
     })
@@ -89,6 +80,7 @@ router.post('/login', async (req, res) => {
   const payload = {
     id: existingUser.id,
     email: existingUser.email,
+    role: existingUser.role,
     name: existingUser.name,
   }
 
