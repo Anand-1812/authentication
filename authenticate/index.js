@@ -1,10 +1,7 @@
 import express from 'express';
 import userRouter from "./routes/user.routes.js"
-import db from "./db/index.js";
-import { eq } from "drizzle-orm";
-import { usersSessions, usersTable } from "./db/schema.js";
-import { profileEnd } from 'console';
 import jwt  from "jsonwebtoken"
+import adminRouter from "./routes/admin.routes.js"; 
 
 const app = express();
 const PORT = process.env.PORT ?? 6969;
@@ -35,5 +32,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', userRouter);
+app.use('/admin', adminRouter);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
