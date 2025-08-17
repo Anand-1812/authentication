@@ -25,6 +25,7 @@
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.4",
     "express": "~4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3"
   }
 }
